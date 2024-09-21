@@ -1,0 +1,48 @@
+﻿@page "/"
+@implements IDisposable
+@rendermode InteractiveServer
+@inherits OwningComponentBase<IProduct>
+@* @inject IProduct productService *@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Products != null)
+        {
+            @foreach (var item in Products)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<br />
+<input type="number" class="form-control" @bind="ID" />
+<input type="text" class="form-control" @bind="Name" />
+<button class="btn btn-primary" @onclick="Save">Save</button>
+@code {
+    int ID;
+    string? Name;
+
+    List<Product> Products = [];
+    protected override void OnInitialized() => Products = Service.GetProducts();
+    void Save() 
+    {
+        //productService.AddProduct(new Product() { Id = ID, Name = Name });
+        Service.AddProduct(new Product() { Id = ID, Name = Name });
+        // Products = productService.GetProducts();
+        Products = Service.GetProducts();
+    }
+    bool IsDisposed = false;
+    public void Dispose()
+    {
+        IsDisposed = true;
+    }
+}
